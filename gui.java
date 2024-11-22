@@ -16,6 +16,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.*;
 
 
 public class gui {
@@ -38,6 +39,7 @@ public class gui {
     int click =1;
     int boardWidth = tileSize*cols;
     int boardHeight = tileSize*rows;
+    boolean gameOver = false;
     
     
     
@@ -50,23 +52,54 @@ public class gui {
     
     tile[][] board = new tile[rows][cols];
     
+    private void checkWin(){
+        
+        
+        //horizontal win
+        for(int r=0;r<3;r++){
+            if(board[r][0].getText() == ""){
+                continue;
+            }
+            if(board[r][0].getText()==board[r][1].getText() &&board[r][1].getText()==board[r][2].getText()){
+                System.out.println("WIN");
+                gameOver=true;
+                return;
+            }
+        }
+        
+
+        
+        
+        
+    }
+    
     
     
     
     gui(){
         //frame
-        frame.setSize(boardWidth, 80);
+        frame.setSize(boardWidth, boardHeight);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());
         
         // Reset button modifications
-        resetButton.setText("Resett");
+        resetButton.setText("Reset");
         resetButton.setFont(new Font("Arial", Font.PLAIN, 14)); // Smaller font for the button
         resetButton.setFocusPainted(false); // Remove focus outline
         resetButton.setMargin(new Insets(5, 10, 5, 10)); // Add padding to make it compact
         resetButton.setBackground(Color.LIGHT_GRAY); // Optional: Change the button background color
+        resetButton.addActionListener(e -> {
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    board[r][c].setText("");
+                }
+            }
+            click = 1;
+            gameOver = false;
+            textLabel.setText("Tic Tac Toe");
+        });
 
         
         
@@ -104,11 +137,13 @@ public class gui {
                         }
                         else if(click%2==0){
                             tile.setText("O");
+                            checkWin();
                             click+=1;
                         }
 
                         else{
                             tile.setText("X");
+                            checkWin();
                             click+=1;
                         }
                       
@@ -118,9 +153,12 @@ public class gui {
                 gamePanel.add(tile);
             }
         }
-        
-        
-        
         frame.setVisible(true);
+        
     }
+        
+        
+        
+        
+    
 }
